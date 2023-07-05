@@ -9,8 +9,12 @@ const userController = {
                 email: req.body.email,
                 password: req.body.password
             };
+            if(email != " " && senha != " "){
             const response = await UserModel.create(user);
             res.status(201).json({ response, msg: "Usuário cadastrado!" });
+            }else { 
+                console.log("erro");
+            }
         } catch (error) {
             console.log(error);
         }
