@@ -86,11 +86,21 @@ const userController = {
     },
     delete: async (req, res) => {
         try {
-            const id = req.params.id;
-            let results = await UserModel.deleteOne({ _id: id });
-            res.send(results).status(200);
+            const id = userId;
+            const user = await UserModel.get(id);
+
+            if (!user) {
+                console.log(user);
+                return res.status(404).json({ message: "Usuário não encontrado." });
+            }
+
+            const deletedUser = await UserModel.delete(id);
+
+            res.status(200).json({ deletedUser, message: "Usuário removido com sucesso!"});
+
         } catch (error) {
             console.log(error);
+            return res.status(500).json({ message: "Falha ao processar sua requisição." });
         }
     },
 
@@ -137,12 +147,21 @@ const userController = {
     deleteTask: async (req, res) => {
         try {
             const id = req.params.id;
-            let results = await TaskModel.deleteOne({ _id: id });
-            res.send(results).status(200);
+            let results = await TaskModel.findOne({ _id: id });
+
+            if (!results) {
+                console.log(results);
+                return res.status(404).json({ message: "Task não encontrado." });
+            }
+
+            const deletedTask = await TaskModel.findByIdAndDelete(results);
+            res.status(200).json({ deletedTask, message: "Task removido com sucesso!"});
+
         } catch (error) {
             console.log(error);
+            return res.status(500).json({ message: "Falha ao processar sua requisição." });
         }
-    }
+    },
 
 };
 
