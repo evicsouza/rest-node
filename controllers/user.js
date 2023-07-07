@@ -1,5 +1,5 @@
 const main = require("../database/comm");
-const { User: UserModel, User } = require("../models/user");
+const { User: UserModel, User } = require("../models/User");
 const {Task: TaskModel, Task} = require("../models/Task");
 
 const userController = {
@@ -7,14 +7,10 @@ const userController = {
         try {
             const user = {
                 email: req.body.email,
-                password: req.body.password
+                password : req.body.password,
             };
-            if(email != " " && senha != " "){
             const response = await UserModel.create(user);
-            res.status(201).json({ response, msg: "Usuário cadastrado!" });
-            }else { 
-                console.log("erro");
-            }
+            res.status(201).json({ response, msg: "Usuário cadastrada!" });
         } catch (error) {
             console.log(error);
         }
@@ -86,17 +82,16 @@ const userController = {
     },
     delete: async (req, res) => {
         try {
-            const id = userId;
-            const user = await UserModel.get(id);
+            const id = req.params.id;
+            let results = await UserModel.findOne({ _id: id });
 
-            if (!user) {
-                console.log(user);
-                return res.status(404).json({ message: "Usuário não encontrado." });
+            if (!results) {
+                console.log(results);
+                return res.status(404).json({ message: "Usuario não encontrado." });
             }
 
-            const deletedUser = await UserModel.delete(id);
-
-            res.status(200).json({ deletedUser, message: "Usuário removido com sucesso!"});
+            const deletedUser = await UserModel.findByIdAndDelete(results);
+            res.status(200).json({ deletedTask, message: "Usuario removido com sucesso!"});
 
         } catch (error) {
             console.log(error);
@@ -138,7 +133,7 @@ const userController = {
             const task = {
                 descricao: req.body.descricao,
             };
-            let results = await TaskModel.updateOne({ _id: id }, { $set: user });
+            let results = await TaskModel.updateOne({ _id: id }, { $set: task });
             res.send(results).status(200);
         } catch (error) {
             console.log(error);
