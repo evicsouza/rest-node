@@ -1,13 +1,15 @@
 const main = require("../database/comm");
 const { User: UserModel, User } = require("../models/User");
-const {Task: TaskModel, Task} = require("../models/Task");
+const { Task: TaskModel, Task } = require("../models/Task");
+const { Evento: EventoModel, Evento } = require("../models/Evento");
+
 
 const userController = {
     create: async (req, res) => {
         try {
             const user = {
                 email: req.body.email,
-                password : req.body.password,
+                password: req.body.password,
             };
             const response = await UserModel.create(user);
             res.status(201).json({ response, msg: "Usuário cadastrada!" });
@@ -18,20 +20,20 @@ const userController = {
 
     authenticate: async (req, res) => {
         try {
-            const  email = req.body.email;
-            const password  = req.body.password;
- 
+            const email = req.body.email;
+            const password = req.body.password;
+
             const user = await User.findOne({
                 email: email,
                 password: password
             });
-            
+
             if (!user) {
                 return res.status(404).send({
                     message: 'Usuário ou senha inválidos'
                 });
             }
-           
+
             //const token = await authService.generateToken({
             //    email: user.email
             //});
@@ -91,7 +93,7 @@ const userController = {
             }
 
             const deletedUser = await UserModel.findByIdAndDelete(results);
-            res.status(200).json({ deletedTask, message: "Usuario removido com sucesso!"});
+            res.status(200).json({ deletedTask, message: "Usuario removido com sucesso!" });
 
         } catch (error) {
             console.log(error);
@@ -150,7 +152,7 @@ const userController = {
             }
 
             const deletedTask = await TaskModel.findByIdAndDelete(results);
-            res.status(200).json({ deletedTask, message: "Task removido com sucesso!"});
+            res.status(200).json({ deletedTask, message: "Task removido com sucesso!" });
 
         } catch (error) {
             console.log(error);
@@ -158,6 +160,131 @@ const userController = {
         }
     },
 
+
+    //Tasks
+    createTask: async (req, res) => {
+        try {
+            const task = {
+                descricao: req.body.descricao,
+            };
+            const response = await TaskModel.create(task);
+            res.status(201).json({ response, msg: "Tarefa cadastrada!" });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    readAllTasks: async (req, res) => {
+        let results = await TaskModel.find({});
+        res.send(results).status(200);
+    },
+
+    readOneTask: async (req, res) => {
+        try {
+            const id = req.params.id;
+            let results = await TaskModel.findOne({ _id: id });
+            res.send(results).status(200);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    updateTask: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const task = {
+                descricao: req.body.descricao,
+            };
+            let results = await TaskModel.updateOne({ _id: id }, { $set: task });
+            res.send(results).status(200);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    deleteTask: async (req, res) => {
+        try {
+            const id = req.params.id;
+            let results = await TaskModel.findOne({ _id: id });
+
+            if (!results) {
+                console.log(results);
+                return res.status(404).json({ message: "Task não encontrado." });
+            }
+
+            const deletedTask = await TaskModel.findByIdAndDelete(results);
+            res.status(200).json({ deletedTask, message: "Task removido com sucesso!" });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: "Falha ao processar sua requisição." });
+        }
+    },
+
+
+    //Event
+    createEvent: async (req, res) => {
+        try {
+            const evento = {
+                name: req.body.name,
+                date: req.body.date,
+                eventType: req.body.eventType,
+                isLargeEvent: req.body.isLargeEvent
+            };
+            const response = await EventoModel.create(evento);
+            res.status(201).json({ response, msg: "Evento cadastrado!" });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    readAllEvents: async (req, res) => {
+        let results = await EventoModel.find({});
+        res.send(results).status(200);
+    },
+
+    readOneEvent: async (req, res) => {
+        try {
+            const id = req.params.id;
+            let results = await EventoModel.findOne({ _id: id });
+            res.send(results).status(200);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    updateEvent: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const evento = {
+                name: req.body.name,
+                date: req.body.date,
+                eventType: req.body.eventType,
+                isLargeEvent: req.body.isLargeEvent
+            };
+            let results = await EventoModel.updateOne({ _id: id }, { $set: evento });
+            res.send(results).status(200);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    deleteEvent: async (req, res) => {
+        try {
+            const id = req.params.id;
+            let results = await EventoModel.findOne({ _id: id });
+
+            if (!results) {
+                console.log(results);
+                return res.status(404).json({ message: "Evento não encontrado." });
+            }
+
+            const deletedEvent = await EventoModel.findByIdAndDelete(results);
+            res.status(200).json({ deletedEvent, message: "Evento removido com sucesso!" });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: "Falha ao processar sua requisição." });
+        }
+    },
 };
 
 

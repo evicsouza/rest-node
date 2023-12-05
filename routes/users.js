@@ -24,8 +24,12 @@ router.route("/task/delete/:id").post((req, res)=> userController.deleteTask(req
 //     const taskId = req.params._id || req.query._id;
 //     userController.deleteTask(taskId, res);
 // });
-router.route("/task/:id").put((req, res) => {
-    const taskId = req.params._id || req.query._id;
-    userController.updateTask(taskId, req, res);
-});
+
+//Tasks
+router.route("/event").post((req, res)=> userController.createEvent(req,res));
+router.route("/event/all").get((req, res)=> userController.readAllEvents(req,res));
+router.route("/event/:id").get((req, res)=> userController.readOneEvent(req,res));
+router.route("/event/edit/:id").post((req, res)=> userController.updateEvent(req,res));
+router.route("/event/delete/:id").delete((req, res)=> userController.deleteEvent(req,res));
+
 module.exports = router;
